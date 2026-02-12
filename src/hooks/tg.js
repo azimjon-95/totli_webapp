@@ -3,10 +3,14 @@ export function getInitData() {
 }
 
 export function ensureTelegramOnly() {
-    if (!window.Telegram?.WebApp?.initData) {
-        document.body.innerHTML = `<div style="padding:16px;font-family:sans-serif">
-      ❌ Bu sahifa faqat Telegram ichida ishlaydi. Botdan <b>Открыть</b> ni bosing.
-    </div>`;
+    const ok = !!window.Telegram?.WebApp?.initData;
+    if (!ok) {
+        document.body.innerHTML = `
+      <div style="padding:18px;font-family:system-ui;">
+        <h3>❌ Bu sahifa faqat Telegram ichida ishlaydi</h3>
+        <p>Botdan <b>Открыть</b> tugmasini bosing.</p>
+      </div>
+    `;
         throw new Error("NOT_TELEGRAM");
     }
 }

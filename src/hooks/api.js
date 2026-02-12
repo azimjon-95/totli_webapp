@@ -1,12 +1,22 @@
 import { getInitData } from "./tg";
 
-const API = import.meta.env.VITE_API_URL; // masalan: https://yourdomain.com/api/webapp
+const API = import.meta.env.VITE_API_URL; // masalan: https://your-backend.com
+
+export function isInTelegram() {
+    return !!window.Telegram?.WebApp?.initData;
+}
 
 export async function apiGet(path) {
-    const r = await fetch(`${API}${path}`, {
-        headers: { "x-telegram-init-data": getInitData() }
+    const initData = getInitData();
+
+    const res = await fetch(`${API}/api/webapp${path}`, {
+        method: "GET",
+        headers: {
+            "x-telegram-init-data": initData,
+        },
     });
-    const j = await r.json();
-    if (!j.ok) throw new Error(j.error || "API_ERROR");
-    return j.data;
+
+    const json = await res.json();
+    if (!json?.ok) throw new Error(json?.error || "API_ERROR");
+    return json.data; // ✅ doim data qaytadi
 }

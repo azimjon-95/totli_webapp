@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { apiGet, isInTelegram } from "./api";
+import { apiGet, isInTelegram } from "./hooks/api";
 import { io } from "socket.io-client";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
@@ -104,7 +104,7 @@ export default function App() {
 
       {err ? <div className="err">⚠️ {err}</div> : null}
 
-      <div className="grid">
+      <div className="cardsRow">
         <Card title="🧁 Jami sotuv" value={toMoney(cards?.soldTotal)} />
         <Card title="💰 Tushgan pul" value={toMoney(cards?.salePaid)} />
         <Card title="💸 Chiqim" value={toMoney(cards?.expenseSum)} />
