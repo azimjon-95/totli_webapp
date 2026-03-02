@@ -13,7 +13,7 @@ const items = [
 
 export default function BottomNav({ value, onChange }) {
     return (
-        <div className="cw-nav">
+        <div className="cw-nav" style={{ paddingBottom: "20px" }}>
             {items.map((it) => {
                 const Icon = it.icon;
                 const active = value === it.key;
