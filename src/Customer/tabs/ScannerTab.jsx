@@ -1,3 +1,5 @@
+
+// ScannerTab.jsx - tortlar katalogi va zakaz berish
 import React, { useState } from "react";
 import "../styles/scannerTab.css";
 

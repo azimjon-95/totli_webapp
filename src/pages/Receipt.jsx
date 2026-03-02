@@ -1,3 +1,4 @@
+// Receipt.jsx - sotuvchining chek ko'rinishi, token orqali ma'lumotlarni yuklab olish va print qilish imkoniyati
 import React, { useEffect, useMemo, useState } from "react";
 import { apiGet } from "../hooks/api";
 import "./styles/receipt.css";
@@ -28,7 +29,7 @@ export default function Receipt() {
                 }
 
                 // ✅ faqat /receipt
-                const data = await apiGet(`/receipt?token=${encodeURIComponent(token)}`);
+                const data = await apiGet("/receipt", { token });
 
                 setSale(data.sale);
                 setSale(prev => ({ ...prev, deepLink: data.deepLink, qrDataUrl: data.qrDataUrl }));

@@ -2,7 +2,6 @@
   "name": "chat",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://cake.medme.uz",
   "dependencies": {
     "antd": "^6.3.0",
     "axios": "^1.13.5",
@@ -48,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }

@@ -1,3 +1,4 @@
+// AppRoutes.jsx - ilovaning barcha marshrutlarini belgilaydi, shu jumladan yangi Customer sahifasi uchun marshrut qo'shildi
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import App from "../App";

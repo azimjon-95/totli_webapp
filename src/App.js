@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useEffect, useMemo, useState } from "react";
 import { apiGet, isInTelegram, API_BASE } from "./hooks/api";
 import { io } from "socket.io-client";
@@ -83,37 +84,28 @@ function useDebounce(value, delay = 350) {
 export default function App() {
   const [from, setFrom] = useState(todayISO());
   const [to, setTo] = useState(todayISO());
-
   const debFrom = useDebounce(from, 350);
   const debTo = useDebounce(to, 350);
 
   const [cards, setCards] = useState(null);
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [auth, setAuth] = useState(null);
-  // console.log("auth", auth);
-  // console.log("cards", cards);
-  // console.log("sales", sales);
-  // console.log("expenses", expenses);
-
   const [todayLine, setTodayLine] = useState([]);
   const [yesterdayLine, setYesterdayLine] = useState([]);
-
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
+  // Dashboard faqat Telegram ichida yoki localhost’da ishlasin
   const blocked = useMemo(() => {
     const host = window.location.hostname;
 
     const isLocal =
       host === "localhost" ||
       host === "127.0.0.1" ||
-      host.endsWith(".ngrok-free.app"); // ✅ ngrok uchun
+      host.endsWith(".ngrok-free.app");
 
     return !(isInTelegram() || isLocal);
   }, []);
-
-
 
   async function loadAll(customFrom, customTo) {
     setErr("");
@@ -126,9 +118,9 @@ export default function App() {
       const fromISO = toISOStartOfDay(_from);
       const toISO = toISOEndOfDay(_to);
 
-      const query = `from=${encodeURIComponent(
-        fromISO
-      )}&to=${encodeURIComponent(toISO)}`;
+      const query = `from=${encodeURIComponent(fromISO)}&to=${encodeURIComponent(
+        toISO
+      )}`;
 
       const rep = await apiGet(`/dashboard/summary?${query}`);
       setCards(rep.cards);
@@ -137,12 +129,7 @@ export default function App() {
       setSales(act.sales || []);
       setExpenses(act.expenses || []);
 
-      // const auth = await apiGet(`/auth`);
-      // setAuth(auth || []);
-
       const ch = await apiGet(`/dashboard/chart?${query}`);
-      console.log("chart data:", ch);
-
       setTodayLine(ch.today || []);
       setYesterdayLine(ch.yesterday || []);
     } catch (e) {
@@ -157,19 +144,32 @@ export default function App() {
     if (blocked) return;
 
     if (isInTelegram()) {
-      window.Telegram?.WebApp?.ready();
-      window.Telegram?.WebApp?.expand();
+      window.Telegram?.WebApp?.ready?.();
+      window.Telegram?.WebApp?.expand?.();
     }
 
     // Birinchi load
     loadAll();
 
-    const s = io(API_BASE, { transports: ["websocket"] });
+    // ✅ Socket doim cake.medme.uz (API_BASE) ga ulanadi
+    const s = io(API_BASE, {
+      transports: ["websocket"],
+      withCredentials: true,
+    });
+
+    // Sizning serveringiz "refresh" event yuborayotgan bo‘lsa
     s.on("refresh", () => loadAll());
 
+    // Agar server "dash:update" yuborsa ham ishlasin (ixtiyoriy)
+    s.on("dash:update", () => loadAll());
+
+    s.on("connect_error", (e) => {
+      console.log("socket connect_error:", e?.message || e);
+    });
+
     return () => s.close();
-    // eslint-disable-next-line
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blocked]);
 
   // Date o'zgarsa avtomatik loadAll
   useEffect(() => {
@@ -181,7 +181,7 @@ export default function App() {
     }
 
     loadAll(debFrom, debTo);
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debFrom, debTo, blocked]);
 
   if (blocked) {
@@ -214,12 +214,7 @@ export default function App() {
           value={from}
           onChange={(e) => setFrom(e.target.value)}
         />
-        <input
-          type="date"
-          value={to}
-          onChange={(e) => setTo(e.target.value)}
-        />
-        {/* Ko‘rish tugmasi olib tashlandi */}
+        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
       </div>
 
       {err ? <div className="err">⚠️ {err}</div> : null}
@@ -240,22 +235,9 @@ export default function App() {
             <LineChart data={mergeLines(todayLine, yesterdayLine)}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="hour" />
-              {/* <YAxis /> */}
               <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="today"
-                stroke="#22c55e"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="yesterday"
-                stroke="#f59e0b"
-                strokeWidth={2}
-                dot={false}
-              />
+              <Line type="monotone" dataKey="today" stroke="#22c55e" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="yesterday" stroke="#f59e0b" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -266,10 +248,7 @@ export default function App() {
 
         <div className="list">
           {buildMixedListFull(sales, expenses).map((x, idx) => (
-            <div
-              key={`${x.type}-${x.orderNo || idx}`}
-              className={`row ${x.type}`}
-            >
+            <div key={`${x.type}-${x.orderNo || idx}`} className={`row ${x.type}`}>
               <div className="rowTop">
                 <b className="title">
                   {x.type === "sale"
@@ -302,28 +281,27 @@ export default function App() {
                     <span>To'langan:</span>
                     <b>{toMoney(x.paidTotal)} so'm</b>
                   </div>
-                  {
-                    x.debtTotal > 0 && (
-                      <div className="kv">
-                        <span>Qarzdorlik:</span>
-                        <b>{toMoney(x.debtTotal)} so'm</b>
-                      </div>
-                    )
-                  }
+
+                  {x.debtTotal > 0 && (
+                    <div className="kv">
+                      <span>Qarzdorlik:</span>
+                      <b>{toMoney(x.debtTotal)} so'm</b>
+                    </div>
+                  )}
+
                   <div className="kv">
                     <span>Sotuvchi:</span>
                     <b>
                       {x.seller?.tgName || "-"} ({x.seller?.tgId || "-"})
                     </b>
                   </div>
-                  {
-                    x.phone && (
-                      <div className="kv">
-                        <span>Telefon:</span>
-                        <b>{x.phone || "-"}</b>
-                      </div>
-                    )
-                  }
+
+                  {x.phone && (
+                    <div className="kv">
+                      <span>Telefon:</span>
+                      <b>{x.phone || "-"}</b>
+                    </div>
+                  )}
 
                   {x.items?.length ? (
                     <div className="items">
@@ -331,9 +309,7 @@ export default function App() {
                         <div key={i} className="itemRow">
                           <span className="muted">{it.name}</span>
                           <span className="muted">x{it.qty}</span>
-                          <span className="muted">
-                            {toMoney(it.price)} so'm
-                          </span>
+                          <span className="muted">{toMoney(it.price)} so'm</span>
                           <b>{toMoney(it.paid)} so'm</b>
                         </div>
                       ))}
@@ -408,9 +384,7 @@ function mergeLines(today, yesterday) {
     map.set(y.hour, cur);
   }
 
-  return Array.from(map.values()).sort(
-    (a, b) => Number(a.hour) - Number(b.hour)
-  );
+  return Array.from(map.values()).sort((a, b) => Number(a.hour) - Number(b.hour));
 }
 
 /* ===========================

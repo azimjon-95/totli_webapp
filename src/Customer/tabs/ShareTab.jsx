@@ -1,3 +1,4 @@
+// ShareTab.jsx - do'stlarni taklif qilish va bonus ballarni ko'rish
 import React, { useState } from "react";
 import '../styles/share.css';
 

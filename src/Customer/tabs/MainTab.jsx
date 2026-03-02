@@ -1,3 +1,4 @@
+// MainTab.jsx - mijozning asosiy tabi: profil, bonus bosqichlari, chek tarixi
 import React from "react";
 
 function fmt(n) {

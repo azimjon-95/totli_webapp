@@ -1,3 +1,4 @@
+// CoinTab.jsx - tort bosish o'yini
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import cakequote from "../img/cake.png";
 import mini from "../img/mini.png";
@@ -151,11 +152,6 @@ export default function CoinTab() {
         for (let i = 0; i < add; i++) spawnFly(cx, cy);
     }
 
-    // (xohlasang) reset
-    function resetAll() {
-        setTaps(0);
-        localStorage.setItem(LS_KEY, "0");
-    }
 
     return (
         <div className="cw-coin">

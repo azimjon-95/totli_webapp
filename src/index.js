@@ -1,3 +1,4 @@
+// index.js - ilovaning kirish nuqtasi, barcha kerakli CSS fayllarini import qiladi va React Router yordamida marshrutlarni boshqaradi
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";

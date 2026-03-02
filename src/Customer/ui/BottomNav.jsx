@@ -1,3 +1,4 @@
+// BottomNav.jsx - pastki navigatsiya paneli
 import React from "react";
 import { FiHome, FiShare2 } from "react-icons/fi";
 import { TbCoinMonero } from "react-icons/tb";

@@ -1,18 +1,7 @@
 import axios from "axios";
 
 export const PROD_API = "https://cake.medme.uz";
-
-export function isInTelegram() {
-    return !!window.Telegram?.WebApp?.initData;
-}
-
-function isLocalLike() {
-    const h = window.location.hostname;
-    return h === "localhost" || h === "127.0.0.1";
-}
-
-// ✅ local/telegram => proxy ishlaydi => ""
-export const API_BASE = isLocalLike() ? "" : PROD_API;
+export const API_BASE = PROD_API;
 
 function getTelegramInitData() {
     return window.Telegram?.WebApp?.initData || "";
@@ -26,7 +15,6 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
     const initData = getTelegramInitData();
     if (initData) config.headers["x-telegram-init-data"] = initData;
-    else if (isLocalLike()) config.headers["x-telegram-test"] = "local-dev";
     return config;
 });
 
@@ -45,25 +33,25 @@ api.interceptors.response.use(
 function buildUrl(path) {
     return `/api/webapp${path}`;
 }
+export function isInTelegram() {
+    return !!window.Telegram?.WebApp?.initData;
+}
 
 export async function apiGet(path, params) {
     const res = await api.get(buildUrl(path), { params });
     if (res.data?.ok === false) throw new Error(res.data?.error || "API_ERROR");
     return res.data?.data ?? res.data;
 }
-
 export async function apiPost(path, body, params) {
     const res = await api.post(buildUrl(path), body ?? {}, { params });
     if (res.data?.ok === false) throw new Error(res.data?.error || "API_ERROR");
     return res.data?.data ?? res.data;
 }
-
 export async function apiPut(path, body, params) {
     const res = await api.put(buildUrl(path), body ?? {}, { params });
     if (res.data?.ok === false) throw new Error(res.data?.error || "API_ERROR");
     return res.data?.data ?? res.data;
 }
-
 export async function apiDel(path, params) {
     const res = await api.delete(buildUrl(path), { params });
     if (res.data?.ok === false) throw new Error(res.data?.error || "API_ERROR");
@@ -71,6 +59,10 @@ export async function apiDel(path, params) {
 }
 
 export default api;
+
+
+
+
 
 // import axios from "axios";
 
