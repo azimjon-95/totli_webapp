@@ -1,0 +1,142 @@
+.rc-wrap {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rc-actions {
+    width: 320px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.rc-btn {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.bonus_QR {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.qr-title {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.qr-subtitle {
+    font-size: 12px;
+    opacity: .75;
+    text-align: center;
+}
+
+.qr-img {
+    width: 150px;
+    height: auto;
+}
+
+.receipt {
+    width: 320px;
+    /* 80mm printerga yaqin */
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .08);
+    color: #111;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.r-title {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.r-sub {
+    margin-top: 2px;
+    font-size: 13px;
+}
+
+.r-center {
+    text-align: center;
+}
+
+.r-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.r-hr {
+    border-top: 1px dashed #333;
+    margin: 10px 0;
+}
+
+.r-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.r-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.r-name {
+    flex: 1;
+}
+
+.r-right {
+    text-align: right;
+    min-width: 90px;
+}
+
+.r-muted {
+    opacity: .75;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.r-totals {
+    font-size: 13px;
+}
+
+.r-thanks {
+    margin-top: 8px;
+    font-weight: 800;
+}
+
+/* PRINT OPTIMIZE */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .rc-wrap {
+        padding: 0;
+    }
+
+    .receipt {
+        width: 80mm;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+}

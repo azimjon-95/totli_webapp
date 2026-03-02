@@ -1,0 +1,240 @@
+.cw-coin {
+    min-height: calc(100vh - 70px);
+    padding: 12px 12px 90px;
+    color: #fff;
+    background: radial-gradient(1200px 500px at 50% -50%, #2b2f40, transparent),
+        #0f1118;
+}
+
+
+/* balance */
+.cw-coin__balance {
+    display: flex;
+    align-items: center;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    justify-content: center;
+    gap: 10px;
+    margin: 12px 0 16px;
+}
+
+.cw-coin__balanceIcon {
+    font-size: 26px;
+}
+
+.cw-coin__balanceNum {
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: 0.4px;
+}
+
+/* click area */
+.cw-clickArea {
+    position: relative;
+    display: grid;
+    place-items: center;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    margin: 6px 0 16px;
+}
+
+.cw-cakeBtn {
+    width: 260px;
+    height: 260px;
+    border-radius: 999px;
+    /* border: none; */
+    position: relative !important;
+    cursor: pointer;
+    background: radial-gradient(circle at 50% 40%, #2f5bff33, transparent 55%),
+        radial-gradient(circle at 50% 50%, #3c78ff22, transparent 65%),
+        rgba(255, 255, 255, 0.03);
+    box-shadow: 0 18px 70px rgba(0, 0, 0, 0.45);
+    display: grid;
+    border: 11px solid #ffffff0f;
+
+    place-items: center;
+    outline: none;
+    /* overflow: hidden; */
+    touch-action: none;
+    transition: transform 0.08s ease;
+}
+
+.cw-cakeBtn.is-pop {
+    transform: scale(0.96);
+}
+
+.cw-cakeImg {
+    width: 190px;
+    height: 190px;
+    object-fit: contain;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    pointer-events: none;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+}
+
+/* flying layer */
+.cw-flyLayer {
+    position: absolute;
+    bottom: 0;
+    /* background: #000; */
+    inset: 0;
+    /* bg*/
+    pointer-events: none;
+}
+
+.cw-fly {
+    position: absolute;
+    transform: translate(-50%, -50%) scale(var(--sc, 1));
+    animation: flyUp 0.9s ease-out forwards;
+}
+
+.cw-fly img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.35));
+}
+
+.cw-fly__plus {
+    position: absolute;
+    left: 42px;
+    top: 2px;
+    font-weight: 800;
+    font-size: 14px;
+    opacity: 0.95;
+    text-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+@keyframes flyUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(var(--sc, 1));
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate(var(--dx, 0px), var(--dy, -160px)) rotate(var(--rot, 0deg)) scale(calc(var(--sc, 1) * 0.92));
+    }
+}
+
+/* progress */
+.cw-progress {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.cw-progress__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.cw-progress__label {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+.cw-progress__value {
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.cw-bar {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.cw-bar__fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #3d7cff, #7b5cff);
+    border-radius: 999px;
+}
+
+.cw-progress__hint {
+    margin-top: 10px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* bottom row */
+.cw-boost {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding: 10px 4px;
+    opacity: 0.95;
+}
+
+.cw-boost__left {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.cw-boost__btn {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+}
+
+/* ============================================ */
+
+/* Button ichida ring joylashuvi */
+.cw-cakeBtn {
+    position: relative;
+    overflow: visible;
+    /* ring tashqariga chiqishi mumkin */
+}
+
+/* Ring wrapper */
+.cw-ring {
+    position: absolute;
+    inset: -20px;
+    pointer-events: none;
+}
+
+.cw-ringSvg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    /* 12:00 dan boshlasin */
+    filter: drop-shadow(0 6px 18px #6250ff40);
+}
+
+/* ring stroke */
+.cw-ringBg,
+.cw-ringFg {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+/* fon ring */
+.cw-ringBg {
+    stroke: #39a6ff19;
+}
+
+/* progress ring */
+.cw-ringFg {
+    stroke: rgb(161, 67, 0);
+    /* xohlasang gradient ham qilamiz */
+    stroke-dasharray: 339.292;
+    /* 2 * PI * r (r=54) ≈ 339.29 */
+    stroke-dashoffset: calc(339.292 * (1 - (var(--p) / 100)));
+    transition: stroke-dashoffset 180ms ease;
+}

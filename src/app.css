@@ -1,0 +1,265 @@
+:root {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui;
+    background: #0b0f17;
+    color: #fff;
+}
+
+.wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 14px 3px;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.muted {
+    opacity: .75;
+    font-size: 12px;
+}
+
+.btn {
+    background: #2563eb;
+    border: 0;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.btn:disabled {
+    opacity: .6;
+}
+
+.range {
+    display: flex;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.range input {
+    flex: 1;
+    background: #111827;
+    color: #fff;
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.card {
+    background: #121826;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.k {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.v {
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.chartBlock,
+.listBlock {
+    margin-top: 12px;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.h {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.chart {
+    background: #0b1220;
+    border: 1px solid #1f2937;
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.legend {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+    opacity: .9;
+    font-size: 12px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.dot.g {
+    background: #22c55e;
+}
+
+.dot.y {
+    background: #f59e0b;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.row {
+    background: #0b1220;
+    border: 1px solid #1f2937;
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.rowTop {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+.money {
+    font-weight: 800;
+}
+
+.err {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 12px;
+    background: #3b0a0a;
+    border: 1px solid #7f1d1d;
+}
+
+@media(max-width:520px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ✅ CARDLAR 1 QATORDA (SLIDE) */
+.cardsRow {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 6px 2px 6px;
+    margin-top: 10px;
+
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cardsRow::-webkit-scrollbar {
+    height: 4px !important;
+}
+
+.cardsRow::-webkit-scrollbar-thumb {
+    background: #192134;
+    border-radius: 999px;
+}
+
+/* har bir cardga kenglik beramiz */
+.cardsRow .card {
+    flex: 0 0 170px;
+    /* card width */
+    scroll-snap-align: start;
+}
+
+.listBlock.compact .row {
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #eeeeeeaf;
+    margin-bottom: 8px;
+}
+
+.listBlock.compact .rowTop {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.listBlock.compact .title {
+    font-size: 13px;
+}
+
+.listBlock.compact .money {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.listBlock.compact .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: 11px;
+}
+
+.listBlock.compact .pill {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid #ddd;
+}
+
+.listBlock.compact .time,
+.listBlock.compact .muted {
+    color: #666;
+}
+
+.listBlock.compact .details {
+    margin-top: 6px;
+    font-size: 12px;
+    display: grid;
+    gap: 4px;
+}
+
+.listBlock.compact .kv {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.listBlock.compact .items {
+    margin-top: 6px;
+    display: grid;
+    gap: 4px;
+}
+
+.listBlock.compact .itemRow {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 8px;
+    font-size: 11px;
+}
