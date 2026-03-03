@@ -31,7 +31,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 6px;
 
-    padding: 8px 10px calc(2px + max(env(safe-area-inset-bottom, 0px), var(--safe-bottom-js))) 12px;
+    padding: 8px 10px max(env(safe-area-inset-bottom, 0px), var(--safe-bottom-js)) 12px;
 
     background: rgba(17, 25, 33, 0.98);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
