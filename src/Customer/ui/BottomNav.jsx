@@ -1,4 +1,3 @@
-// BottomNav.jsx - pastki navigatsiya paneli
 import React from "react";
 import { FiHome, FiShare2 } from "react-icons/fi";
 import { TbCoinMonero } from "react-icons/tb";
@@ -13,7 +12,7 @@ const items = [
 
 export default function BottomNav({ value, onChange }) {
     return (
-        <div className="cw-nav" style={{ paddingBottom: "20px" }}>
+        <div className="cw-nav">
             {items.map((it) => {
                 const Icon = it.icon;
                 const active = value === it.key;
@@ -26,6 +25,7 @@ export default function BottomNav({ value, onChange }) {
                         onClick={() => onChange(it.key)}
                     >
                         <Icon className="cw-nav__icon" size={22} />
+                        <span className="cw-nav__label">{it.label}</span>
                     </button>
                 );
             })}
