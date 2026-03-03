@@ -336,6 +336,7 @@
 
 .cw-profile__avatar-wrap {
     position: relative;
+    margin-top: 7px;
     flex-shrink: 0;
 }
 
