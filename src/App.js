@@ -199,29 +199,28 @@ export default function App() {
     <div className="wrap">
       <div className="top">
         <div>
-          <div className="title">Totli Dashboard</div>
-          <div className="muted">📊 Real-time hisobot</div>
+          <div className="title">Totli Statistika</div>
+          <div className="muted">📊 Jonli ma'lumotlar</div>
         </div>
 
-        <button className="btn" onClick={() => loadAll()} disabled={loading}>
+        {/* <button className="btn" onClick={() => loadAll()} disabled={loading}>
           {loading ? "Yuklanmoqda..." : "Yangilash"}
-        </button>
+        </button> */}
+        <div className="range">
+          <input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+          />
+          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+        </div>
       </div>
 
-      <div className="range">
-        <input
-          type="date"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
-        />
-        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
-      </div>
 
       {err ? <div className="err">⚠️ {err}</div> : null}
 
       <div className="cardsRow">
-        <Card title="🧁 Jami sotuv" value={toMoney(cards?.soldTotal)} />
-        <Card title="💰 Tushgan pul" value={toMoney(cards?.salePaid)} />
+        <Card title="💰 Tushgan pul" value={toMoney(cards?.soldTotal)} />
         <Card title="💸 Chiqim" value={toMoney(cards?.expenseSum)} />
         <Card title="👥 Mijoz qarzi" value={toMoney(cards?.customerDebt)} />
         <Card title="🏭 Firmaga qarz" value={toMoney(cards?.supplierDebt)} />
