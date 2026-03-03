@@ -59,9 +59,9 @@ export default function CustomerTabs() {
     return (
         <div className="cw-shell">
             <div className="cw-shell__content">
-                <div className="cw-header">
+                {/* <div className="cw-header">
                     <h2 className="cw-header__title">🎁 Totli Bonuslari</h2>
-                </div>
+                </div> */}
 
                 {content}
             </div>
