@@ -92,7 +92,6 @@ export default function App() {
   const [expenses, setExpenses] = useState([]);
   const [todayLine, setTodayLine] = useState([]);
   const [yesterdayLine, setYesterdayLine] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
   // Dashboard faqat Telegram ichida yoki localhost’da ishlasin
@@ -109,7 +108,6 @@ export default function App() {
 
   async function loadAll(customFrom, customTo) {
     setErr("");
-    setLoading(true);
 
     try {
       const _from = customFrom ?? from;
@@ -134,8 +132,6 @@ export default function App() {
       setYesterdayLine(ch.yesterday || []);
     } catch (e) {
       setErr(e?.message || "Xatolik");
-    } finally {
-      setLoading(false);
     }
   }
 
