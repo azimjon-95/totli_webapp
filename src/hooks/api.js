@@ -66,7 +66,8 @@ export default api;
 
 // import axios from "axios";
 
-// const PROD_API = "https://cake.medme.uz";
+// const PROD_API = "http://localhost:6060";
+// // const PROD_API = "https://cake.medme.uz";
 
 // const isLocalLike = () => {
 //     const h = window.location.hostname;
@@ -99,7 +100,7 @@ export default api;
 
 // function buildUrl(path) {
 //     // path: "/customer/me" kabi bo‘lsin
-//     return `/api/webapp${path}`;
+//     return `http://localhost:6060/api/webapp${path}`;
 // }
 
 // function pickError(res) {

@@ -86,7 +86,7 @@ export default function App() {
   const [to, setTo] = useState(todayISO());
   const debFrom = useDebounce(from, 350);
   const debTo = useDebounce(to, 350);
-
+  const [unauthorized, setUnauthorized] = useState(false);
   const [cards, setCards] = useState(null);
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -103,8 +103,11 @@ export default function App() {
       host === "127.0.0.1" ||
       host.endsWith(".ngrok-free.app");
 
+
+    if (unauthorized) return true;
+
     return !(isInTelegram() || isLocal);
-  }, []);
+  }, [unauthorized]);
 
   async function loadAll(customFrom, customTo) {
     setErr("");
@@ -131,7 +134,19 @@ export default function App() {
       setTodayLine(ch.today || []);
       setYesterdayLine(ch.yesterday || []);
     } catch (e) {
-      setErr(e?.message || "Xatolik");
+      const msg = e?.message || "Xatolik";
+
+      if (
+        msg.includes("UNAUTHORIZED") ||
+        msg.includes("no_hash") ||
+        msg.includes("401") ||
+        msg.includes("FORBIDDEN") ||   // 👈 qo‘shildi
+        msg.includes("403")            // 👈 qo‘shildi
+      ) {
+        setUnauthorized(true);
+      }
+
+      setErr(msg);
     }
   }
 
@@ -183,9 +198,25 @@ export default function App() {
   if (blocked) {
     return (
       <div className="wrap">
-        <div className="card">
-          <div className="h">Bu mini app faqat Telegram ichida ishlaydi.</div>
-          <div className="muted">Test: faqat localhost.</div>
+        <div style={{ maxWidth: 520, margin: "60px auto", textAlign: "center" }}>
+          <h2>🔒 Kirish cheklangan</h2>
+
+          <p style={{ fontSize: 16 }}>
+            😔 Uzr, sizga hisobotlarni ko‘rish uchun ruxsat berilmagan.
+          </p>
+
+          <p style={{ marginTop: 10 }}>
+            📩 Ruxsat olish uchun administratorga murojaat qiling:
+          </p>
+
+          <a
+            href="https://t.me/Azimjon_M"
+            target="_blank"
+            rel="noreferrer"
+            style={{ fontWeight: "bold", fontSize: 16 }}
+          >
+            @Azimjon_M
+          </a>
         </div>
       </div>
     );
