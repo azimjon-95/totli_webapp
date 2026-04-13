@@ -139,15 +139,29 @@ export default function App() {
       if (
         msg.includes("UNAUTHORIZED") ||
         msg.includes("no_hash") ||
-        msg.includes("401") ||
-        msg.includes("FORBIDDEN") ||   // 👈 qo‘shildi
-        msg.includes("403")            // 👈 qo‘shildi
+        msg.includes("401")
       ) {
         setUnauthorized(true);
       }
 
       setErr(msg);
     }
+
+    // } catch (e) {
+    //   const msg = e?.message || "Xatolik";
+
+    //   if (
+    //     msg.includes("UNAUTHORIZED") ||
+    //     msg.includes("no_hash") ||
+    //     msg.includes("401") ||
+    //     msg.includes("FORBIDDEN") ||   // 👈 qo‘shildi
+    //     msg.includes("403")            // 👈 qo‘shildi
+    //   ) {
+    //     setUnauthorized(true);
+    //   }
+
+    //   setErr(msg);
+    // }
   }
 
   // Telegram init + socket refresh
