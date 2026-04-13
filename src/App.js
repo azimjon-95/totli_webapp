@@ -133,13 +133,17 @@ export default function App() {
       const ch = await apiGet(`/dashboard/chart?${query}`);
       setTodayLine(ch.today || []);
       setYesterdayLine(ch.yesterday || []);
+
+
     } catch (e) {
       const msg = e?.message || "Xatolik";
 
       if (
         msg.includes("UNAUTHORIZED") ||
         msg.includes("no_hash") ||
-        msg.includes("401")
+        msg.includes("401") ||
+        msg.includes("FORBIDDEN") ||   // 👈 qo‘shildi
+        msg.includes("403")            // 👈 qo‘shildi
       ) {
         setUnauthorized(true);
       }
