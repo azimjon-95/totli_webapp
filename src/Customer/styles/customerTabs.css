@@ -1,0 +1,102 @@
+.cw-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column
+}
+
+.cw-shell__content {
+    flex: 1;
+    padding-bottom: 74px
+}
+
+.cw-tab {
+    padding: 0 12px 12px
+}
+
+:root {
+    --safe-bottom-js: 0px;
+}
+
+/* Bottom nav */
+.cw-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    /* height o‘chirildi */
+    min-height: 60px;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+
+    padding: 8px 10px max(env(safe-area-inset-bottom, 0px), var(--safe-bottom-js)) 12px;
+
+    background: rgba(17, 25, 33, 0.98);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    z-index: 9999;
+}
+
+/* Nav item */
+.cw-nav__item {
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    color: #fff !important;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+
+    padding: 6px 0;
+}
+
+.cw-nav__item.is-active {
+    background: #f0c94a57;
+    border-color: #f0c94a79;
+}
+
+.cw-nav__icon {
+    font-size: 18px;
+}
+
+.cw-nav__label {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+/* placeholder card */
+.cw-card {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.cw-card__title {
+    font-weight: 900;
+    margin-bottom: 8px
+}
+
+.cw-card__text {
+    font-size: 13px;
+    opacity: .9;
+    line-height: 1.35
+}
+
+.cw-card__big {
+    margin-top: 10px;
+    font-size: 22px;
+    font-weight: 900
+}

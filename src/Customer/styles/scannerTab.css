@@ -1,0 +1,138 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.cake-root {
+    padding: 10px;
+}
+
+.cake-filters {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.cake-filters::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: none;
+    background: #222;
+    color: white;
+    white-space: nowrap;
+}
+
+.filter-btn.active {
+    background: gold;
+    color: black;
+}
+
+.cake-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.cake-card {
+    background: #111;
+    border-radius: 14px;
+    overflow: hidden;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .4);
+}
+
+.cake-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.cake-info {
+    padding: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cake-info button {
+    /* margin-top: 6px; */
+    width: 100%;
+    padding: 6px;
+    border-radius: 10px;
+    border: none;
+    background: gold;
+
+    font-weight: bold;
+}
+
+.zoom-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.zoom-modal img {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.order-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.order-box {
+    box-sizing: border-box;
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+}
+
+.order-box h3 {
+    margin-top: 0;
+    text-align: center;
+    color: #333;
+
+}
+
+.order-box input {
+    box-sizing: border-box;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 8px 0;
+}
+
+.order-box button {
+    width: 48%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: gold;
+    font-weight: bold;
+    margin-top: 12px;
+    margin: 0 1%;
+}
+
+.order-box button:first-child {
+    background: #ccc !important;
+    color: #333 !important;
+}

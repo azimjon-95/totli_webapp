@@ -1,0 +1,111 @@
+/* ═══════════════════════════════════════════
+   TOTLI — GLOBAL DESIGN SYSTEM
+   Mobile-first, phone-only webapp
+   Font: Outfit (display) + JetBrains Mono (data)
+═══════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ── BRAND PALETTE ── */
+  --bg:          #080a0f;
+  --bg2:         #0e1118;
+  --bg3:         #141820;
+  --surface:     #1a1f2e;
+  --surface2:    #222838;
+  --border:      rgba(255,255,255,0.07);
+  --border2:     rgba(255,255,255,0.12);
+
+  /* Accent */
+  --gold:        #f7c948;
+  --gold2:       #e8a820;
+  --gold-dim:    rgba(247,201,72,0.12);
+  --gold-glow:   rgba(247,201,72,0.25);
+
+  --green:       #22d47a;
+  --green-dim:   rgba(34,212,122,0.10);
+  --red:         #ff4d6d;
+  --red-dim:     rgba(255,77,109,0.10);
+  --blue:        #4d9fff;
+  --blue-dim:    rgba(77,159,255,0.10);
+  --purple:      #a78bfa;
+  --purple-dim:  rgba(167,139,250,0.10);
+  --orange:      #fb923c;
+  --orange-dim:  rgba(251,146,60,0.10);
+  --cyan:        #22d3ee;
+  --cyan-dim:    rgba(34,211,238,0.10);
+
+  /* Text */
+  --text:        #f0f2f8;
+  --text2:       rgba(240,242,248,0.65);
+  --text3:       rgba(240,242,248,0.35);
+
+  /* Typography */
+  --font:        'Outfit', sans-serif;
+  --mono:        'JetBrains Mono', monospace;
+
+  /* Layout */
+  --r-sm:        10px;
+  --r-md:        16px;
+  --r-lg:        22px;
+  --r-xl:        28px;
+
+  /* Transition */
+  --ease:        cubic-bezier(0.34,1.56,0.64,1);
+  --ease-fast:   cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+/* ── RESET ── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:16px; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
+
+/* ── UTILITIES ── */
+.mono { font-family:var(--mono); }
+.text2 { color:var(--text2); }
+.text3 { color:var(--text3); }
+.gold { color:var(--gold); }
+.green { color:var(--green); }
+.red { color:var(--red); }
+
+/* ── SKELETON ── */
+@keyframes shimmer {
+  0%   { background-position:-400px 0; }
+  100% { background-position: 400px 0; }
+}
+.sk {
+  background:linear-gradient(90deg,var(--surface) 0%,var(--surface2) 40%,var(--surface) 80%);
+  background-size:800px 100%;
+  animation:shimmer 1.6s ease-in-out infinite;
+  border-radius:var(--r-sm);
+  display:block;
+}
+
+/* ── FADE IN ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.fadeUp { animation:fadeUp 0.4s var(--ease-fast) both; }
+
+/* ── NOISE OVERLAY (atmosphere) ── */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size:180px;
+  pointer-events:none;
+  z-index:0;
+}
