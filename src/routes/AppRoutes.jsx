@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import App from "../App";
 import Receipt from "../pages/Receipt";
 import Customer from "../Customer"; // ✅ YANGI PAGE
+import PrintStation from "../pages/PrintStation";
 
 export default function AppRoutes() {
     return (
@@ -14,6 +15,7 @@ export default function AppRoutes() {
             {/* ✅ Customer single page */}
             <Route path="/customer" element={<Customer />} />
 
+            <Route path="/print" element={<PrintStation />} />
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );
