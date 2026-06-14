@@ -1,27 +1,41 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+// Receipt.jsx — 58mm Bluetooth termal printer + avtomatik chop etish
+import React, { useEffect, useState, useCallback } from "react";
 import "./styles/receipt.css";
-import "../global.css";
-
-function fmt(n) { return Number(n || 0).toLocaleString("uz-UZ"); }
-
-const fmtDt = new Intl.DateTimeFormat("uz-UZ", {
-  timeZone: "Asia/Tashkent",
-  year: "numeric", month: "2-digit", day: "2-digit",
-  hour: "2-digit", minute: "2-digit"
-});
 
 const API_BASE = "https://cake.medme.uz";
+const SHOP = {
+  name:  "TOTLI TORTLAR",
+  addr:  "Sang'sentir, Anhor minosi",
+  phone: "+998 77 737 77 40",
+  tg:    "@totli_tortlari",
+};
+
+function fmt(n) {
+  return Number(n || 0).toLocaleString("uz-UZ");
+}
+function fmtDate(iso) {
+  if (!iso) return "—";
+  return new Intl.DateTimeFormat("uz-UZ", {
+    timeZone: "Asia/Tashkent",
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  }).format(new Date(iso));
+}
 
 export default function Receipt() {
-  const token = new URLSearchParams(window.location.search).get("token");
-  const [data, setData]     = useState(null);
-  const [err, setErr]       = useState("");
-  const [loading, setLoad]  = useState(true);
-  const [printed, setPrinted] = useState(false);
-  const tickRef = useRef(null);
+  const params  = new URLSearchParams(window.location.search);
+  const token   = params.get("token");
+  // ?auto=1 bo'lsa — chek yuklanishi bilan avtomatik chop etadi
+  const autoPrint = params.get("auto") === "1";
 
+  const [data,    setData]    = useState(null);
+  const [err,     setErr]     = useState("");
+  const [loading, setLoading] = useState(true);
+  const [status,  setStatus]  = useState(""); // "printing" | "done"
+
+  // ── Ma'lumotlarni yuklash ──────────────────────────
   useEffect(() => {
-    if (!token) { setErr("Chek topilmadi"); setLoad(false); return; }
+    if (!token) { setErr("Chek topilmadi"); setLoading(false); return; }
     fetch(`${API_BASE}/api/webapp/receipt?token=${token}`)
       .then(r => r.json())
       .then(j => {
@@ -29,218 +43,159 @@ export default function Receipt() {
         setData(j.data);
       })
       .catch(e => setErr(e.message))
-      .finally(() => setLoad(false));
+      .finally(() => setLoading(false));
   }, [token]);
 
-  // Confetti animation on mount
+  // ── Avtomatik chop (auto=1) ────────────────────────
   useEffect(() => {
-    if (!data) return;
-    const canvas = document.getElementById("rc-confetti");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = 180;
-    const pieces = Array.from({ length: 38 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * -80,
-      r: Math.random() * 5 + 3,
-      d: Math.random() * 2 + 1,
-      color: ["#f7c948","#ff6b9d","#43d9a2","#5b8af7","#ff9f43"][Math.floor(Math.random()*5)],
-      tilt: Math.random() * 10 - 5,
-    }));
-    let frame = 0;
-    const max = 90;
-    function draw() {
-      if (frame++ > max) { ctx.clearRect(0,0,canvas.width,canvas.height); return; }
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      pieces.forEach(p => {
-        p.y += p.d; p.tilt += 0.1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, 2*Math.PI);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      });
-      requestAnimationFrame(draw);
-    }
-    draw();
-  }, [data]);
+    if (!data || !autoPrint) return;
+    // 400ms kutamiz — DOM to'liq render bo'lsin
+    const t = setTimeout(() => doPrint(), 400);
+    return () => clearTimeout(t);
+  }, [data, autoPrint]);
 
-  const handlePrint = useCallback(() => {
-    setPrinted(true);
-    setTimeout(() => window.print(), 100);
+  // ── Chop etish funksiyasi ──────────────────────────
+  const doPrint = useCallback(() => {
+    setStatus("printing");
+    // Telegram WebApp ni yopmaymiz — faqat print dialog
+    setTimeout(() => {
+      window.print();
+      setStatus("done");
+    }, 80);
   }, []);
 
-  if (loading) return (
-    <div className="rc-wrap">
-      <div className="rc-skeleton">
-        <div className="rc-skel-logo"/>
-        <div className="rc-skel-line w80"/>
-        <div className="rc-skel-line w50"/>
-        <div className="rc-skel-line w90"/>
-        <div className="rc-skel-line w60"/>
-        <div className="rc-skel-line w70"/>
-      </div>
-    </div>
-  );
-
-  if (err) return (
-    <div className="rc-wrap">
-      <div className="rc-err-box">
-        <div className="rc-err-icon">⚠️</div>
-        <div className="rc-err-text">{err}</div>
-      </div>
-    </div>
-  );
-
-  if (!data) return null;
+  // ── Holatlar ──────────────────────────────────────
+  if (loading) return <div className="rp-center"><div className="rp-spin"/></div>;
+  if (err)     return <div className="rp-center rp-err">⚠️ {err}</div>;
+  if (!data)   return null;
 
   const { sale, qrDataUrl, deepLink, minPaid } = data;
-  const items   = sale.items || [];
-  const dt      = sale.createdAt ? fmtDt.format(new Date(sale.createdAt)) : "—";
-  const hasDebt = Number(sale.debtTotal) > 0;
-  const hasChange = Number(sale.change || 0) > 0;
+  const items    = sale.items || [];
+  const hasDebt  = Number(sale.debtTotal)   > 0;
+  const hasChng  = Number(sale.change || 0) > 0;
   const cashback = Math.floor(Number(sale.paidTotal || 0) * 0.10);
-  const showQr  = !!qrDataUrl && Number(sale.paidTotal || 0) >= Number(minPaid || 0);
+  const showQr   = !!qrDataUrl && Number(sale.paidTotal || 0) >= Number(minPaid || 0);
 
   return (
-    <div className="rc-wrap">
-      <canvas id="rc-confetti" className="rc-confetti no-print"/>
+    <div className="rp-wrap">
 
-      <div className="rc-paper">
+      {/* ════ PRINTER CHEK — 58mm ════ */}
+      <div className="rp-receipt" id="rp-receipt">
 
-        {/* ── HEADER ── */}
-        <div className="rc-head">
-          <div className="rc-head-glow"/>
-          <div className="rc-logo-wrap">
-            <span className="rc-logo-emoji">🎂</span>
-          </div>
-          <div className="rc-shop-name">TOTLI TORTLAR</div>
-          <div className="rc-shop-addr">📍 Sang'sentir, Anhor minosi</div>
-          <div className="rc-shop-phone">📞 +998 77 737 77 40</div>
+        {/* HEADER */}
+        <div className="rp-head">
+          <div className="rp-logo">🎂</div>
+          <div className="rp-shop">{SHOP.name}</div>
+          <div className="rp-sub">{SHOP.addr}</div>
+          <div className="rp-sub">{SHOP.phone}</div>
         </div>
 
-        {/* ── DIVIDER ── */}
-        <div className="rc-cut">
-          <div className="rc-cut-circle rc-cut-circle--left"/>
-          <div className="rc-cut-line"/>
-          <div className="rc-cut-circle rc-cut-circle--right"/>
+        <div className="rp-dash"/>
+
+        {/* META */}
+        <div className="rp-meta">
+          <Row l="Chek №"  r={`#${sale.orderNo || "—"}`} mono />
+          <Row l="Sana"    r={fmtDate(sale.createdAt)} mono />
+          <Row l="Kassir"  r={sale.seller?.tgName || "—"} />
+          {sale.phone && <Row l="Tel" r={sale.phone} mono />}
         </div>
 
-        {/* ── META ── */}
-        <div className="rc-meta">
-          <div className="rc-meta-row">
-            <span className="rc-meta-label">Chek №</span>
-            <span className="rc-meta-val mono">#{sale.orderNo || "—"}</span>
-          </div>
-          <div className="rc-meta-row">
-            <span className="rc-meta-label">Sana</span>
-            <span className="rc-meta-val mono">{dt}</span>
-          </div>
-          <div className="rc-meta-row">
-            <span className="rc-meta-label">Kassir</span>
-            <span className="rc-meta-val">{sale.seller?.tgName || "—"}</span>
-          </div>
-          {sale.phone && (
-            <div className="rc-meta-row">
-              <span className="rc-meta-label">Mijoz tel</span>
-              <span className="rc-meta-val mono">{sale.phone}</span>
-            </div>
-          )}
+        <div className="rp-dash"/>
+
+        {/* ITEMS */}
+        <table className="rp-table">
+          <thead>
+            <tr>
+              <th className="al">Mahsulot</th>
+              <th>Son</th>
+              <th>Narx</th>
+              <th className="ar">Jami</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((it, i) => {
+              const qty   = Number(it.qty   || 1);
+              const price = Number(it.price || 0);
+              return (
+                <tr key={i}>
+                  <td className="al td-name">{it.name || "—"}</td>
+                  <td className="ac">{qty}</td>
+                  <td className="ar mono">{fmt(price)}</td>
+                  <td className="ar mono bold">{fmt(qty * price)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <div className="rp-line"/>
+
+        {/* TOTALS */}
+        <div className="rp-totals">
+          <Row l="Jami"     r={`${fmt(sale.total)} so'm`} mono />
+          {hasDebt && <Row l="Qarz ⚠️"  r={`${fmt(sale.debtTotal)} so'm`} mono cls="red" />}
+          {hasChng && <Row l="Qaytim ↩" r={`${fmt(sale.change)} so'm`}   mono cls="blue" />}
+        </div>
+        <div className="rp-paid-row">
+          <span>TO'LANDI</span>
+          <span className="mono">{fmt(sale.paidTotal)} so'm</span>
         </div>
 
-        {/* ── ITEMS ── */}
-        <div className="rc-items-wrap">
-          <div className="rc-items-head">
-            <span>Mahsulot</span>
-            <span>Son</span>
-            <span>Narx</span>
-            <span>Jami</span>
-          </div>
-          {items.map((it, i) => {
-            const qty   = Number(it.qty || 1);
-            const price = Number(it.price || 0);
-            return (
-              <div key={i} className="rc-item">
-                <span className="rc-item-name">{it.name || "—"}</span>
-                <span className="rc-item-qty">{qty}</span>
-                <span className="rc-item-price mono">{fmt(price)}</span>
-                <span className="rc-item-total mono">{fmt(qty * price)}</span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* ── TOTALS ── */}
-        <div className="rc-totals">
-          <div className="rc-total-row">
-            <span>Jami summa</span>
-            <span className="mono">{fmt(sale.total)} so'm</span>
-          </div>
-          {hasDebt && (
-            <div className="rc-total-row rc-debt">
-              <span>⚠️ Qarz</span>
-              <span className="mono">{fmt(sale.debtTotal)} so'm</span>
-            </div>
-          )}
-          {hasChange && (
-            <div className="rc-total-row rc-change">
-              <span>↩ Qaytim</span>
-              <span className="mono">{fmt(sale.change)} so'm</span>
-            </div>
-          )}
-          <div className="rc-total-row rc-paid">
-            <span>✅ To'landi</span>
-            <span className="mono">{fmt(sale.paidTotal)} so'm</span>
-          </div>
-        </div>
-
-        {/* ── CASHBACK QR ── */}
+        {/* CASHBACK QR */}
         {showQr && (
-          <div className="rc-cashback">
-            <div className="rc-cashback-badge">
-              <span className="rc-cashback-pct">10%</span>
-              <span className="rc-cashback-label">Cashback</span>
+          <>
+            <div className="rp-dash"/>
+            <div className="rp-qr-block">
+              <div className="rp-qr-title">🎁 CASHBACK — 10%</div>
+              <div className="rp-qr-amount">+{fmt(cashback)} ball</div>
+              <img src={qrDataUrl} alt="QR" className="rp-qr-img"/>
+              <div className="rp-qr-hint">
+                Shu QR ni skaner qiling<br/>
+                <b>{fmt(cashback)} so'm</b> cashback olasiz
+              </div>
+              <div className="rp-qr-bot">{SHOP.tg}</div>
             </div>
-            <div className="rc-cashback-amount">
-              +{fmt(cashback)} ball
-            </div>
-            <div className="rc-qr-wrap">
-              <img src={qrDataUrl} alt="QR" className="rc-qr-img"/>
-            </div>
-            <div className="rc-qr-hint">
-              Ushbu QR kodni skaner qiling<br/>
-              <strong>{fmt(cashback)} so'm</strong> cashback olasiz 🎁
-            </div>
-            {deepLink && (
-              <a href={deepLink} className="rc-tg-btn no-print">
-                <span>Telegram orqali olish</span>
-                <span className="rc-tg-arrow">→</span>
-              </a>
-            )}
-          </div>
+          </>
         )}
 
-        {/* ── CUT ── */}
-        <div className="rc-cut rc-cut--bottom">
-          <div className="rc-cut-circle rc-cut-circle--left"/>
-          <div className="rc-cut-line"/>
-          <div className="rc-cut-circle rc-cut-circle--right"/>
+        <div className="rp-dash"/>
+
+        {/* FOOTER */}
+        <div className="rp-foot">
+          <div className="rp-thanks">Xaridingiz uchun rahmat!</div>
+          <div className="rp-sub">Qayta keling 🙏</div>
+          <div className="rp-sub">{SHOP.tg}</div>
         </div>
 
-        {/* ── FOOTER ── */}
-        <div className="rc-foot">
-          <div className="rc-foot-thanks">Xaridingiz uchun rahmat! 🙏</div>
-          <div className="rc-foot-info">Qayta keling, doimo xush kelibsiz</div>
-          <div className="rc-foot-tg">@totli_tortlari</div>
-          <div className="rc-foot-map">🗺 maps.app.goo.gl/aX7c62z9kNTQYBEu5</div>
-        </div>
-
-        {/* ── PRINT BTN ── */}
-        <button className="rc-print-btn no-print" onClick={handlePrint}>
-          <span>🖨</span> Chop etish
-        </button>
+        {/* ── STAR line ── */}
+        <div className="rp-stars">★ ★ ★ ★ ★</div>
 
       </div>
+
+      {/* ════ SCREEN ONLY BUTTONS ════ */}
+      <div className="rp-actions no-print">
+        <button className="rp-btn rp-btn--print" onClick={doPrint}>
+          {status === "printing" ? "⏳ Chop etilmoqda..." : "🖨 Chop etish"}
+        </button>
+        {showQr && deepLink && (
+          <a href={deepLink} className="rp-btn rp-btn--tg">
+            📲 Telegram — cashback olish
+          </a>
+        )}
+        {status === "done" && (
+          <div className="rp-done">✅ Chek printerga yuborildi</div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
+function Row({ l, r, mono, cls }) {
+  return (
+    <div className={`rp-row ${cls || ""}`}>
+      <span>{l}</span>
+      <span className={mono ? "mono" : ""}>{r}</span>
     </div>
   );
 }
