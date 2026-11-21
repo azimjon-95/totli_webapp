@@ -6,6 +6,15 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import io from "socket.io-client";
 
 const SERVER = "https://cake.medme.uz";
+
+// Har filial printeri faqat o'z cheklarini chiqaradi: /print?branch=sang | /print?branch=toda
+// (branch berilmasa — sang; eski sotuvlarda branchId yo'q = sang)
+const BRANCH_NAMES = { sang: "Totli Sang", toda: "Totli To'da" };
+function getStationBranch() {
+  const b = String(new URLSearchParams(window.location.search).get("branch") || "sang").toLowerCase();
+  return BRANCH_NAMES[b] ? b : "sang";
+}
+const STATION_BRANCH = getStationBranch();
 const RAWBT   = "http://localhost:8080"; // RawBT lokal API
 
 export default function PrintStation() {
@@ -106,6 +115,8 @@ export default function PrintStation() {
     });
 
     socket.on("print:receipt", (data) => {
+      const jobBranch = String(data?.branchId || data?.sale?.branchId || "sang").toLowerCase();
+      if (jobBranch !== STATION_BRANCH) return; // boshqa filial cheki — bu printer chiqarmaydi
       handlePrintJob(data);
     });
 
@@ -168,7 +179,7 @@ export default function PrintStation() {
       <div style={styles.header}>
         <div style={styles.logo}>🖨</div>
         <div style={styles.title}>Print Station</div>
-        <div style={styles.subtitle}>Avtomatik chek chiqaruvchi</div>
+        <div style={styles.subtitle}>{BRANCH_NAMES[STATION_BRANCH]} · avtomatik chek chiqaruvchi</div>
       </div>
 
       {/* STATUS */}

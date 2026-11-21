@@ -90,6 +90,10 @@ export default function App() {
   const [unauth, setUnauth] = useState(false);
   const [liveFlash, setLiveFlash] = useState(false);
 
+  // Filial: admin — hammasi/Sang/To'da tanlaydi; xodim — faqat o'z filiali (server majburlaydi)
+  const [me, setMe] = useState(null);
+  const [branch, setBranch] = useState("all");
+
   const blocked = useMemo(() => {
     const h = window.location.hostname;
     const isLocal = h === "localhost" || h === "127.0.0.1" || h.endsWith(".ngrok-free.app");
@@ -102,7 +106,7 @@ export default function App() {
     setLoading(true); setErr("");
     try {
       const _f = f ?? from, _t = t ?? to;
-      const q = `from=${encodeURIComponent(toISOStart(_f))}&to=${encodeURIComponent(toISOEnd(_t))}`;
+      const q = `from=${encodeURIComponent(toISOStart(_f))}&to=${encodeURIComponent(toISOEnd(_t))}&branch=${branch}`;
       const catQ = expCat !== "all" ? `&categoryKey=${expCat}` : "";
       const [rep, act, ch] = await Promise.all([
         apiGet(`/dashboard/summary?${q}`),
@@ -119,7 +123,13 @@ export default function App() {
       if (msg.includes("UNAUTHORIZED") || msg.includes("401") || msg.includes("FORBIDDEN") || msg.includes("403")) setUnauth(true);
       setErr(msg);
     } finally { setLoading(false); }
-  }, [from, to, expCat]);
+  }, [from, to, expCat, branch]);
+
+  /* ── FILIAL MA'LUMOTI ── */
+  useEffect(() => {
+    if (blocked) return;
+    apiGet("/dashboard/me").then(setMe).catch(() => { });
+  }, [blocked]);
 
   /* ── PERIOD CHANGE ── */
   const applyPeriod = useCallback((pid) => {
@@ -141,7 +151,7 @@ export default function App() {
     return () => s.close();
   }, [blocked]);
 
-  useEffect(() => { if (!blocked) loadAll(debFrom, debTo); }, [debFrom, debTo, expCat]);
+  useEffect(() => { if (!blocked) loadAll(debFrom, debTo); }, [debFrom, debTo, expCat, branch]);
 
   /* ── FILTERED LISTS ── */
   const mixed = useMemo(() => {
@@ -203,6 +213,21 @@ export default function App() {
           <span>jonli</span>
         </div>
       </header>
+
+      {/* ── FILIAL ── */}
+      {me?.isAdmin ? (
+        <div className="db-periods">
+          {[{ id: "all", name: "Hammasi" }, ...(me.branches || []).map(b => ({ id: b.id, name: b.short || b.name }))].map(b => (
+            <button key={b.id} className={`db-period${branch === b.id ? " is-on" : ""}`} onClick={() => setBranch(b.id)}>
+              {b.name}
+            </button>
+          ))}
+        </div>
+      ) : me?.branch ? (
+        <div className="db-periods">
+          <span className="db-period is-on">{(me.branches || []).find(b => b.id === me.branch)?.name || me.branch}</span>
+        </div>
+      ) : null}
 
       {/* ── PERIOD TABS ── */}
       <div className="db-periods">

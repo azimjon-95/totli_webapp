@@ -86,8 +86,9 @@ export default function Receipt() {
         <div className="rp-head">
           <div className="rp-logo">🎂</div>
           <div className="rp-shop">{SHOP.name}</div>
-          <div className="rp-sub">{SHOP.addr}</div>
-          <div className="rp-sub">{SHOP.phone}</div>
+          {data?.branch?.name && <div className="rp-sub">{data.branch.name}</div>}
+          <div className="rp-sub">{data?.branch?.address ?? SHOP.addr}</div>
+          <div className="rp-sub">{data?.branch?.phone || SHOP.phone}</div>
         </div>
 
         <div className="rp-dash"/>
